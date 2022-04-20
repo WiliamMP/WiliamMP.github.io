@@ -1,0 +1,48 @@
+@charset "UTF-8";
+
+
+.texto {
+    border-right: 2px solid rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, .75);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 3em;
+    text-align: center;
+    margin: 0 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-left: 50vh;
+}
+
+.div-texto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(25, 25, 25,);
+    width: auto;
+    height: 100vh;
+}
+
+.escreve-texto {
+    animation: transCursor 750ms steps(50) infinite normal, escrevendo-texto 2s steps(50) 1s normal both;
+}
+
+@keyframes escrevendo-texto {
+    from {
+        width: 0;
+        
+    }
+
+    to {
+        width: 12.5em;
+    }
+}
+
+@keyframes transCursor {
+    from {
+        border-right-color: rgba(255, 255, 255, 0.75);
+    }
+
+    to {
+        border-right-color: transparent;
+    }
+}
