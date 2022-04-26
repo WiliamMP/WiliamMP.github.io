@@ -11,15 +11,19 @@
     white-space: nowrap;
     overflow: hidden;
     margin-left: 50vh;
+    
 }
 
 .div-texto {
     display: flex;
+    flex-wrap: wrap;
+    flex-direction: column; 
     align-items: center;
     justify-content: center;
     background-color: rgba(25, 25, 25,);
-    width: auto;
+    width: auto; 
     height: 100vh;
+    
 }
 
 .escreve-texto {
