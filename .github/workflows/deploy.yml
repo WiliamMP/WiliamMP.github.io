@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false  
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -26,16 +24,8 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Copy build files to root
-        run: |
-          rm -rf *
-          cp -r dist/* .
-          rm -rf dist
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Deploy via GitHub Actions" || echo "No changes to commit"
-          git push origin main
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
