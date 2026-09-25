@@ -1,5 +1,6 @@
-import { useEffect, type CSSProperties } from 'react'
+import { useEffect, type CSSProperties, type PointerEvent } from 'react'
 import { ArrowUpRight, EnvelopeSimple, GithubLogo, LinkedinLogo } from '@phosphor-icons/react'
+import Background from './Background'
 import { links, projects, stack } from './data'
 
 // Revela elementos com a classe .reveal quando entram na tela
@@ -22,12 +23,35 @@ function useReveal() {
   }, [])
 }
 
+// Luz que segue o cursor dentro do elemento (via variáveis CSS, sem re-render)
+function trackSpotlight(e: PointerEvent<HTMLElement>) {
+  const rect = e.currentTarget.getBoundingClientRect()
+  e.currentTarget.style.setProperty('--mx', `${e.clientX - rect.left}px`)
+  e.currentTarget.style.setProperty('--my', `${e.clientY - rect.top}px`)
+}
+
+// Inclina a foto em 3D conforme a posição do cursor
+function tiltPhoto(e: PointerEvent<HTMLElement>) {
+  const rect = e.currentTarget.getBoundingClientRect()
+  const x = (e.clientX - rect.left) / rect.width - 0.5
+  const y = (e.clientY - rect.top) / rect.height - 0.5
+  e.currentTarget.style.setProperty('--rx', `${-y * 14}deg`)
+  e.currentTarget.style.setProperty('--ry', `${x * 14}deg`)
+}
+
+function resetTilt(e: PointerEvent<HTMLElement>) {
+  e.currentTarget.style.setProperty('--rx', '0deg')
+  e.currentTarget.style.setProperty('--ry', '0deg')
+}
+
 function App() {
   useReveal()
   const [featured, ...others] = projects
 
   return (
     <>
+      <Background />
+      <div className="scroll-progress" aria-hidden="true" />
       <header className="nav">
         <a href="#top" className="wordmark">
           Wiliam Patricio
@@ -57,7 +81,7 @@ function App() {
               </a>
             </div>
           </div>
-          <div className="hero-photo">
+          <div className="hero-photo" onPointerMove={tiltPhoto} onPointerLeave={resetTilt}>
             <img src="https://github.com/WiliamMP.png?size=640" alt="Foto de Wiliam Patricio" width="640" height="640" />
           </div>
         </section>
@@ -67,6 +91,7 @@ function App() {
 
           <a
             className="featured reveal"
+            onPointerMove={trackSpotlight}
             href={`${links.github}/${featured.repo}`}
             target="_blank"
             rel="noreferrer"

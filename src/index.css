@@ -47,7 +47,6 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
 }
 
 a {
@@ -469,5 +468,144 @@ footer {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+}
+
+/* Fundo animado */
+.background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.background canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.aurora {
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.24;
+  background: radial-gradient(circle, var(--accent), transparent 65%);
+  will-change: transform;
+}
+
+.aurora-a {
+  top: -25vmax;
+  left: -15vmax;
+  animation: drift-a 22s ease-in-out infinite alternate;
+}
+
+.aurora-b {
+  bottom: -30vmax;
+  right: -20vmax;
+  opacity: 0.16;
+  animation: drift-b 28s ease-in-out infinite alternate;
+}
+
+@keyframes drift-a {
+  to {
+    transform: translate(35vw, 25vh) scale(1.2);
+  }
+}
+
+@keyframes drift-b {
+  to {
+    transform: translate(-30vw, -35vh) scale(0.85);
+  }
+}
+
+/* Barra de progresso de leitura (CSS scroll-driven) */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 11;
+  height: 2px;
+  background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    animation: progress linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
+@keyframes progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Foto inclina em 3D com o cursor */
+.hero-photo {
+  perspective: 900px;
+}
+
+.hero-photo img {
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
+}
+
+.hero-photo:hover img {
+  transition-duration: 0.12s;
+  box-shadow: 0 30px 80px -30px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* Luz que segue o cursor no projeto em destaque */
+.featured {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.featured::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--accent) 22%, transparent),
+    transparent 70%
+  );
+  transition: opacity 0.4s var(--ease);
+}
+
+.featured:hover::before {
+  opacity: 1;
+}
+
+/* Blocos sólidos ficam levemente translúcidos para o fundo aparecer */
+.featured {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%),
+    color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora {
+    animation: none;
+  }
+
+  .scroll-progress {
+    animation: none;
+    display: none;
+  }
+
+  .hero-photo img {
+    transform: none;
   }
 }
