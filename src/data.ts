@@ -45,11 +45,11 @@ export const projects: Project[] = [
   },
 ]
 
-export const stack = {
-  'No dia a dia': ['Delphi', 'Object Pascal', 'SQL'],
-  'Na web': ['React', 'TypeScript', 'JavaScript', 'HTML', 'CSS'],
-  'Já trabalhei com': ['PHP', 'Laravel', 'Java', 'C', 'Python'],
-}
+export const stack = [
+  { group: 'No dia a dia', items: 'Delphi, Object Pascal, SQL' },
+  { group: 'Na web', items: 'React, TypeScript, JavaScript, HTML, CSS' },
+  { group: 'Já trabalhei com', items: 'PHP, Laravel, Java, C, Python' },
+]
 
 export const links = {
   github: 'https://github.com/WiliamMP',

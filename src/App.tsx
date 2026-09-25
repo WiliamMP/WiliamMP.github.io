@@ -1,167 +1,153 @@
-import { useEffect, useState } from 'react'
+import { useEffect, type CSSProperties } from 'react'
+import { ArrowUpRight, EnvelopeSimple, GithubLogo, LinkedinLogo } from '@phosphor-icons/react'
 import { links, projects, stack } from './data'
 
-const roles = ['Desenvolvedor Delphi', 'Dev web com React + TypeScript', 'Caçador de ponto e vírgula']
-
-function useTyping(words: string[]) {
-  const [text, setText] = useState('')
-  const [index, setIndex] = useState(0)
-  const [deleting, setDeleting] = useState(false)
-
+// Revela elementos com a classe .reveal quando entram na tela
+function useReveal() {
   useEffect(() => {
-    const word = words[index % words.length]
-    const done = !deleting && text === word
-    const empty = deleting && text === ''
-
-    const delay = done ? 1800 : empty ? 300 : deleting ? 35 : 70
-    const timer = setTimeout(() => {
-      if (done) setDeleting(true)
-      else if (empty) {
-        setDeleting(false)
-        setIndex((i) => i + 1)
-      } else setText(word.slice(0, text.length + (deleting ? -1 : 1)))
-    }, delay)
-
-    return () => clearTimeout(timer)
-  }, [text, deleting, index, words])
-
-  return text
+    const elements = document.querySelectorAll('.reveal')
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15 },
+    )
+    elements.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [])
 }
 
 function App() {
-  const role = useTyping(roles)
-  const year = new Date().getFullYear()
+  useReveal()
+  const [featured, ...others] = projects
 
   return (
     <>
       <header className="nav">
-        <a href="#top" className="logo">
-          WP<span>.</span>
+        <a href="#top" className="wordmark">
+          Wiliam Patricio
         </a>
         <nav>
-          <a href="#sobre">Sobre</a>
-          <a href="#stack">Stack</a>
           <a href="#projetos">Projetos</a>
+          <a href="#sobre">Sobre</a>
           <a href="#contato">Contato</a>
         </nav>
       </header>
 
       <main id="top">
         <section className="hero">
-          <img className="avatar" src="https://github.com/WiliamMP.png" alt="Foto de Wiliam Patricio" />
-          <p className="eyebrow">Olá, eu sou</p>
-          <h1>Wiliam Patricio</h1>
-          <p className="role">
-            <span>{role}</span>
-            <span className="caret" aria-hidden="true" />
-          </p>
-          <p className="location">📍 Rio do Sul, SC - Brasil</p>
-          <div className="actions">
-            <a className="btn primary" href="#projetos">
-              Ver projetos
-            </a>
-            <a className="btn" href={links.github} target="_blank" rel="noreferrer">
-              GitHub
-            </a>
-          </div>
-        </section>
-
-        <section id="sobre">
-          <h2>
-            <span className="num">01.</span> Sobre mim
-          </h2>
-          <div className="about">
-            <p>
-              Sou desenvolvedor na <strong>BM Soft</strong>, onde trabalho no dia a dia com <strong>Delphi</strong> e{' '}
-              <strong>SQL</strong>, construindo e mantendo sistemas desktop.
+          <div className="hero-text">
+            <h1>
+              Sistemas em Delphi.<br /> <span className="accent">Web em React.</span>
+            </h1>
+            <p className="lead">
+              Sou o Wiliam, desenvolvedor na BM Soft. Delphi e SQL no dia a dia, React e TypeScript na web.
             </p>
-            <p>
-              Também desenvolvo aplicações web com <strong>React + TypeScript</strong> e sigo me aprofundando nesse
-              ecossistema. Este site, inclusive, é feito com eles.
-            </p>
-            <p>
-              Fato curioso: já passei 3 horas caçando um erro que no fim era um ponto e vírgula. Desde então confiro
-              ele primeiro.
-            </p>
-          </div>
-        </section>
-
-        <section id="stack">
-          <h2>
-            <span className="num">02.</span> Stack
-          </h2>
-          <div className="stack">
-            {Object.entries(stack).map(([group, items]) => (
-              <div key={group} className="stack-group">
-                <h3>{group}</h3>
-                <ul>
-                  {items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section id="projetos">
-          <h2>
-            <span className="num">03.</span> Projetos
-          </h2>
-          <div className="projects">
-            {projects.map((project) => (
-              <a
-                key={project.repo}
-                className="card"
-                href={`${links.github}/${project.repo}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <div className="card-top">
-                  <span className="folder" aria-hidden="true">
-                    {'</>'}
-                  </span>
-                  <span className="arrow" aria-hidden="true">
-                    ↗
-                  </span>
-                </div>
-                <h3>{project.name}</h3>
-                <p>{project.description}</p>
-                <ul className="tags">
-                  {project.tags.map((tag) => (
-                    <li key={tag}>{tag}</li>
-                  ))}
-                </ul>
+            <div className="actions">
+              <a className="btn primary" href="#projetos">
+                Ver projetos
               </a>
-            ))}
+              <a className="btn" href="#contato">
+                Contato
+              </a>
+            </div>
           </div>
-          <a className="more" href={`${links.github}?tab=repositories`} target="_blank" rel="noreferrer">
-            Ver todos os repositórios →
+          <div className="hero-photo">
+            <img src="https://github.com/WiliamMP.png?size=640" alt="Foto de Wiliam Patricio" width="640" height="640" />
+          </div>
+        </section>
+
+        <section id="projetos" className="projects">
+          <h2 className="reveal">Projetos</h2>
+
+          <a
+            className="featured reveal"
+            href={`${links.github}/${featured.repo}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <div>
+              <h3>
+                {featured.name}
+                <ArrowUpRight size={22} weight="bold" className="arrow" />
+              </h3>
+              <p>{featured.description}</p>
+            </div>
+            <p className="tags">{featured.tags.join(', ')}</p>
+          </a>
+
+          <ul className="project-list">
+            {others.map((project, i) => (
+              <li key={project.repo} className="reveal" style={{ '--i': i } as CSSProperties}>
+                <a href={`${links.github}/${project.repo}`} target="_blank" rel="noreferrer">
+                  <div>
+                    <h3>{project.name}</h3>
+                    <p>{project.description}</p>
+                  </div>
+                  <span className="tags">{project.tags.join(', ')}</span>
+                  <ArrowUpRight size={18} weight="bold" className="arrow" />
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <a className="text-link reveal" href={`${links.github}?tab=repositories`} target="_blank" rel="noreferrer">
+            Todos os repositórios no GitHub
+            <ArrowUpRight size={16} weight="bold" />
           </a>
         </section>
 
-        <section id="contato" className="contact">
-          <h2>
-            <span className="num">04.</span> Contato
-          </h2>
-          <p>Quer conversar sobre um projeto, uma vaga ou só trocar uma ideia? Me chama.</p>
-          <div className="actions">
-            <a className="btn primary" href={`mailto:${links.email}`}>
-              Enviar e-mail
-            </a>
-            <a className="btn" href={links.linkedin} target="_blank" rel="noreferrer">
+        <section id="sobre" className="about">
+          <div className="about-text reveal">
+            <h2>Sobre</h2>
+            <p>
+              Trabalho na BM Soft construindo e mantendo sistemas desktop em Delphi, com bastante SQL no caminho.
+            </p>
+            <p>
+              Na web, desenvolvo com React e TypeScript e sigo me aprofundando nesse ecossistema. Este site é feito
+              com eles.
+            </p>
+            <p>
+              Já passei 3 horas caçando um erro que era um ponto e vírgula. Hoje ele é a primeira coisa que eu
+              confiro.
+            </p>
+          </div>
+
+          <dl className="stack reveal">
+            {stack.map(({ group, items }) => (
+              <div key={group}>
+                <dt>{group}</dt>
+                <dd>{items}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        <section id="contato" className="contact reveal">
+          <h2>Vamos conversar?</h2>
+          <a className="email" href={`mailto:${links.email}`}>
+            <EnvelopeSimple size={28} />
+            {links.email}
+          </a>
+          <div className="socials">
+            <a href={links.linkedin} target="_blank" rel="noreferrer">
+              <LinkedinLogo size={20} />
               LinkedIn
             </a>
-            <a className="btn" href={links.github} target="_blank" rel="noreferrer">
+            <a href={links.github} target="_blank" rel="noreferrer">
+              <GithubLogo size={20} />
               GitHub
             </a>
           </div>
         </section>
       </main>
 
-      <footer>
-        © {year} Wiliam Patricio · Feito com React + TypeScript
-      </footer>
+      <footer>© {new Date().getFullYear()} Wiliam Patricio</footer>
     </>
   )
 }
